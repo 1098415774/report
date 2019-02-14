@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resumelist/css/PageStyle.css">
+    <script src="../resumelist/js/jquery-1.11.1.js"></script>
+</head>
+<body>
+<div style="background-color: #E4F5FF;">
+    <table id="resume_table" class="Main_View_Div_GridView" cellspacing="0" cellpadding="5" rules="all" border="0" id="gvVehicle" style="background-color:Transparent;border-color:#4F7FC9;border-width:0px;border-collapse:collapse;">
+        <tr class="Main_View_Div_GridView_Header" align="center" valign="middle" style="font-weight:bold;" >
+            <th scope="col" style="width:60px;">ID</th>
+            <th scope="col" style="width:80px;">申请人姓名</th>
+            <th scope="col" style="width:90px;">申请人手机号</th>
+            <th scope="col" style="width:80px;">申请岗位</th>
+            <th scope="col" style="width:80px;">申请公司</th>
+            <th scope="col" style="width:80px;">介绍人ID</th>
+            <th scope="col" style="width:180px;">地址</th>
+            <th scope="col" style="width:80px;">申请时间</th>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var baseUrl = getRootPath_web();
+
+    var pageNum = 1;
+    var totalPage = 0;
+    $(function () {
+        flushdata(pageNum);
+    })
+
+    function flushdata(num){
+        $.ajax({
+            type:"get",
+            url: baseUrl + "/resume/listResumeJson?pageNum=" + num,
+            dataType:"json",
+            success:function (data) {
+                $("#resume_table tr:gt(0)").empty();
+                var list = data.pageBean.data;
+                totalPage = data.pageBean.totalPage;
+                for(var index in list){
+                    var company = "";
+                    if (list[index].attribution == '0'){
+                        company = "盛华";
+                    }else if (list[index].attribution == '1'){
+                        company = "科慧";
+                    }
+                    var isrewarded = "否";
+                    if (list[index].isrewarded == '1'){
+                        isrewarded = "是";
+                    }
+                    var html = "<tr align=\"center\">" +
+                        "<td style=\"font-size:Small;width:60px;\"> " + list[index].id + "</td>" +
+                        "<td style=\"font-size:Small;width:80px;\"> " + list[index].name + "</td>" +
+                        "<td style=\"font-size:Small;width:90px;\"> " + list[index].mobile + "</td>" +
+                        "<td style=\"font-size:Small;width:80px;\"> " + list[index].post + "</td>" +
+                        "<td style=\"font-size:Small;width:80px;\"> " + company + "</td>" +
+                        "<td style=\"font-size:Small;width:80px;\"> " + list[index].reference + "</td>" +
+                        "<td style=\"font-size:Small;width:180px;\"> " + list[index].location + "</td>" +
+                        "<td style=\"font-size:Small;width:80px;\"> " + list[index].createTime + "</td>" +
+                        " </tr>";
+                    $("#resume_table").append(html);
+                }
+                var htmlpage = "<tr><td colspan='8'><table border=\"0\"><tr>";
+                for (var index = 1; index < totalPage+1; index++){
+                    if (index == num){
+                        htmlpage += "<td><span>" + index + "</span></td>";
+                    }else {
+                        htmlpage += "<td><a href='javascript:flushdata(" + index + ")'>" + index + "</a></td>";
+                    }
+                }
+                htmlpage += "</tr></table></td></tr>";
+                $("#resume_table").append(htmlpage);
+            }
+        })
+    }
+
+    function getRootPath_web() {
+        //获取当前网址
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+</script>
+</body>
+</html>

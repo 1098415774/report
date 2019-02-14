@@ -1,0 +1,237 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resumelist/css/PageStyle.css">
+    <link rel="stylesheet" href="../resumelist/bootstrap/css/bootstrap-table.min.css">
+    <script src="../resumelist/js/jquery-1.11.1.js"></script>
+    <script src="../resumelist/bootstrap/js/bootstrap.js"></script>
+    <script src="../resumelist/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../resumelist/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+
+</head>
+<body >
+<form name="form1"  id="form1" target="_self">
+    <div>
+        <div id="Main_Command" class="Main_Command_Div"
+             style="font-size: x-large; text-decoration: blink;background-image: url(../resumelist/images/tab-bg-active.gif)"
+             align="center">
+            员工转发信息查询
+        </div>
+        <div style="background-color: #E4F5FF">
+            <table style=" font-size: small;" class="colorTest">
+                <tr>
+                    <td align="right" style="font-size: small" width="150">
+                        员工工号：
+                    </td>
+                    <td width="180" style="font-size: small">
+                        <input name="reference" type="text" maxlength="10" id="reference" style="width:140px;"/>
+                    </td>
+                    <td align="right" style="font-size: small" width="150">
+                        访问次数：
+                    </td>
+                    <td style="font-size: small" width="180">
+                        <input name="visits" type="text" maxlength="20" id="visits" style="width:140px;"/>
+                    </td>
+                    <td align="right" style="font-size: small" width="140">
+                        是否获得奖励：
+                    </td>
+                    <td style="font-size: small" width="180">
+                        <select name="isrewardedselect" type="text" maxlength="10" id="isrewardedselect" style="width:140px;">
+                            <option></option>
+                            <option value="1">是</option>
+                            <option value="0">否</option>
+                        </select>
+                        <input name="isrewarded" type="hidden" maxlength="20" id="isrewarded" style="width:140px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" style="font-size: small" width="150">
+                        所属公司：
+                    </td>
+                    <td width="180" style="font-size: small">
+                        <select name="attributionselect" type="text" maxlength="10" id="attributionselect" style="width:140px;">
+                            <option></option>
+                            <option value="1">科慧</option>
+                            <option value="0">盛华</option>
+                        </select>
+                        <input name="attribution" id="attribution" value="" type="hidden"/>                    </td>
+                    <td align="right" style="font-size: small" width="150">
+                    </td>
+                    <td style="font-size: small" width="180">
+                    </td>
+                    <td align="right" style="font-size: small" width="140">
+                    </td>
+                    <td style="font-size: small" width="180">
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" style="font-size: small" width="150">
+                    </td>
+                    <td style="font-size: small" width="165">
+                    </td>
+                    <td style="font-size: small">
+                        <input type="button" name="btnQuery" value="查询" id="btnQuery" onclick="query()"/>
+                    </td>
+                    <td style="font-size: small" width="180">
+                        <input type="button" name="btnExcel" value="生成报表" id="btnExcel" onclick="download()"/>
+                    </td>
+                    <td style="font-size: small" width="140">
+                    </td>
+                    <td style="font-size: small" width="180">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</form>
+<!--<div>-->
+    <!--<table id="list_table"></table>-->
+<!--</div>-->
+
+<script type="text/javascript">
+    var baseUrl = getRootPath_web();
+
+    // $(function () {
+    //     //1.初始化Table
+    //     var oTable = new TableInit();
+    //     oTable.Init();
+    // });
+    //
+    // var TableInit = function () {
+    //     var oTableInit = new Object();
+    //     //初始化Table
+    //     oTableInit.Init = function () {
+    //         $('#list_table').bootstrapTable({
+    //             url: baseUrl + "/resume/listResumeCheck",         //请求后台的URL（*）
+    //             method: 'get',                      //请求方式（*）
+    //             striped: true,                      //是否显示行间隔色
+    //             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+    //             pagination: true,                   //是否显示分页（*）
+    //             sortable: false,                     //是否启用排序
+    //             sortOrder: "asc",                   //排序方式
+    //             queryParams: oTableInit.queryParams,//传递参数（*）
+    //             sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+    //             pageNumber: 1,                       //初始化加载第一页，默认第一页
+    //             pageSize: 10,                       //每页的记录行数（*）
+    //             pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+    //             search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+    //             contentType: "application/x-www-form-urlencoded",
+    //             strictSearch: true,
+    //             showColumns: true,                  //是否显示所有的列
+    //             showRefresh: true,                  //是否显示刷新按钮
+    //             minimumCountColumns: 2,             //最少允许的列数
+    //             clickToSelect: true,                //是否启用点击选中行
+    //             // height: 700,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+    //             uniqueId: "no",                     //每一行的唯一标识，一般为主键列
+    //             showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+    //             cardView: false,                    //是否显示详细视图
+    //             detailView: false,                   //是否显示父子表
+    //             columns: [
+    //                 {
+    //                     field: 'no',
+    //                     title: '序号',
+    //                     formatter:function (value, row, index) {
+    //
+    //                     }
+    //                 },
+    //                 {
+    //                     field: 'ID',
+    //                     title: 'ID'
+    //                 }, {
+    //                     field: 'Name',
+    //                     title: '员工工号'
+    //                 }, {
+    //                     field: 'Sex',
+    //                     title: '转发次数'
+    //                 },
+    //                 {
+    //                     field: 'operate',
+    //                     title: '是否获得奖励',
+    //                     formatter:function (value, row, index) {
+    //
+    //                     }
+    //                 },
+    //                 {
+    //                     field: 'operate',
+    //                     title: '所属公司',
+    //                     formatter:function (value, row, index) {
+    //
+    //                     }
+    //                 },
+    //             ]
+    //         });
+    //
+    //     };
+    //
+    //
+    //     //得到查询的参数
+    //     oTableInit.queryParams = function (params) {
+    //         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+    //             // pageSize: params.limit,   //页面大小
+    //             pageNum:params.offset
+    //         };
+    //         return temp;
+    //     };
+    //     return oTableInit;
+    // };
+
+
+    function query() {
+        var attr = $("#attributionselect").val();
+        if (attr.length > 0 && attr != ''){
+            $("#attribution").val(attr);
+        }
+        var isreward = $("#isrewardedselect").val();
+        if (isreward.length > 0 && isreward != ''){
+            $("#isrewarded").val(isreward);
+        }
+        $.ajax({
+            type:"post",
+            url:baseUrl + "/resume/selectResumeCheckAll",
+            data:$("#form1").serialize(),
+            dataType:"json",
+            success:function (data) {
+                if (data.state == "1"){
+                    window.location.href = baseUrl + "/resume/listResumeCheck";
+                }
+            }
+        })
+    }
+
+    function download() {
+        var attr = $("#attributionselect").val();
+        if (attr.length > 0 && attr != ''){
+            $("#attribution").val(attr);
+        }
+        var isreward = $("#isrewardedselect").val();
+        if (isreward.length > 0 && isreward != ''){
+            $("#isrewarded").val(isreward);
+        }
+        $.ajax({
+            type:"post",
+            url:baseUrl + "/resume/selectResumeCheckAll",
+            data:$("#form1").serialize(),
+            dataType:"json",
+            success:function (data) {
+                if (data.state == "1"){
+                    window.location.href = baseUrl + "/resume/resumeCheckXlsDownload";
+                }
+            }
+        })
+    }
+
+    function getRootPath_web() {
+        //获取当前网址
+        var curWwwPath = window.document.location.href;
+        //获取主机地址之后的目录
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+</script>
+</body>
+</html>

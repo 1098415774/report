@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace = "com.example.report.dao.ResumeMapper">
+
+    <resultMap id = "BaseResultMap" type = "com.example.report.entity.ResumeEntity">
+        <result property = "id" column = "id"/>
+        <result property = "name" column = "name"/>
+        <result property = "mobile" column = "mobile"/>
+        <result property = "post" column = "post"/>
+        <result property = "location" column = "location"/>
+        <result property = "reference" column = "Reference" jdbcType="INTEGER"/>
+        <result property = "createTime" column = "CreateTime"/>
+        <result property = "attribution" column = "Attribution"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+      id,name,mobile,post,location,Reference,CreateTime,Attribution
+    </sql>
+    <insert id = "insert" parameterType="com.example.report.entity.ResumeEntity">
+        insert into internalrecommendation(name,mobile,post,location,Reference,CreateTime,Attribution) values(${name},${mobile},${post},${location},${reference},${createTime},${attribution});
+    </insert>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from internalrecommendation;
+    </select>
+
+    <select id="selectByReference" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from internalrecommendation
+        <where>
+            <if test="_parameter != null">
+                Reference = ${reference}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByEntity" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from internalrecommendation
+        <where>
+            <if test="reference != null ">
+                Reference = ${reference}
+            </if>
+            <if test="attribution != null">
+                and Attribution = ${attribution}
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(name)">
+                  and name = &apos;${name}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(mobile)">
+                  and mobile = &apos;${mobile}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(post)">
+                and post = &apos;${post}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(location)">
+                and location = &apos;${location}&apos;
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByEntityAndTime" resultMap="BaseResultMap">
+        <if test="startindex != null and pagesize != null">
+            select top ${pagesize} o.* from (select row_number() over(order by id asc ) as rownumber,* from (
+        </if>
+        select
+        <include refid="Base_Column_List"/>
+        from internalrecommendation
+        <where>
+            <if test="entity.reference != null ">
+                Reference = ${entity.reference}
+            </if>
+            <if test="entity.attribution != null">
+                and Attribution = ${entity.attribution}
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.name)">
+                and name = &apos;${entity.name}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.mobile)">
+                and mobile = &apos;${entity.mobile}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.post)">
+                and post = &apos;${entity.post}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.location)">
+                and location = &apos;${entity.location}&apos;
+            </if>
+            <if test="starttime != null and endtime != null">
+                and CreateTime between &apos;${starttime}&apos; and &apos;${endtime}&apos;
+            </if>
+        </where>
+        <if test="startindex != null and pagesize != null">
+            ) as oo ) as o where rownumber > ${startindex};
+        </if>
+    </select>
+
+    <select id="selectCountByEntityAndTime" resultType="java.lang.Integer">
+        select count(*) from internalrecommendation
+        <where>
+            <if test="entity.reference != null ">
+                Reference = ${entity.reference}
+            </if>
+            <if test="entity.attribution != null">
+                and Attribution = ${entity.attribution}
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.name)">
+                and name = &apos;${entity.name}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.mobile)">
+                and mobile = &apos;${entity.mobile}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.post)">
+                and post = &apos;${entity.post}&apos;
+            </if>
+            <if test="@com.sh.base.utils.StringUtils@isNotEmpty(entity.location)">
+                and location = &apos;${entity.location}&apos;
+            </if>
+            <if test="starttime != null and endtime != null">
+                and CreateTime between &apos;${starttime}&apos; and &apos;${endtime}&apos;
+            </if>
+        </where>
+    </select>
+</mapper>

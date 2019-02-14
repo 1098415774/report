@@ -1,0 +1,210 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../resumelist/css/PageStyle.css">
+    <script src="../resumelist/js/jquery-1.11.1.js"></script>
+</head>
+<body >
+    <form name="form1"  id="form1" target="_self">
+        <div>
+            <div id="Main_Command" class="Main_Command_Div"
+                 style="font-size: x-large; text-decoration: blink;background-image: url(../resumelist/images/tab-bg-active.gif)"
+                 align="center">
+                招聘信息查询
+            </div>
+            <div style="background-color: #E4F5FF">
+                <table style=" font-size: small;" class="colorTest">
+                    <tr>
+                        <td align="right" style="font-size: small" width="150">
+                            申请人姓名：
+                        </td>
+                        <td width="180" style="font-size: small">
+                            <input name="name" type="text" maxlength="10" id="name" style="width:140px;"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="150">
+                            申请人手机号：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input name="mobile" type="text" maxlength="20" id="mobile" style="width:140px;"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="140">
+                            申请岗位：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input name="post" type="text" maxlength="20" id="post" style="width:140px;"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="font-size: small" width="150">
+                            地址：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input name="location" type="text" maxlength="50" id="location" style="width:140px;"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="150">
+                            介绍人ID：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input name="reference" type="number" maxlength="50" id="reference" style="width:140px;"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="140">
+                            报名公司：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <select name="attributionselect" type="text" maxlength="10" id="attributionselect" style="width:140px;">
+                                <option></option>
+                                <option value="1">科慧</option>
+                                <option value="0">盛华</option>
+                            </select>
+                            <input name="attribution" id="attribution" value="" type="hidden"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="font-size: small" width="150">
+                            申请时间从：
+                        </td>
+                        <td width="180" style="font-size: small">
+                            <input name="starttime" type="text" maxlength="10" id="starttime" style="width:140px;" onblur="checkDate(this.value)" onfocus="emputtimelater(this)"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="150">
+                            申请时间至：
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input name="endtime" type="text" maxlength="20" id="endtime" style="width:140px;" onblur="checkDate(this.value)" onfocus="emputtimelater(this)"/>
+                        </td>
+                        <td align="right" style="font-size: small" width="140">
+                        </td>
+                        <td style="font-size: small" width="180">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" style="font-size: small" width="150">
+                        </td>
+                        <td style="font-size: small" width="165">
+                        </td>
+                        <td style="font-size: small">
+                            <input type="button" name="btnQuery" value="查询" id="btnQuery" onclick="query()"/>
+                        </td>
+                        <td style="font-size: small" width="180">
+                            <input type="button" name="btnExcel" value="生成报表" id="btnExcel" onclick="download()"/>
+                        </td>
+                        <td style="font-size: small" width="140">
+                        </td>
+                        <td style="font-size: small" width="180">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        var baseUrl = getRootPath_web();
+
+
+        function query() {
+            var attr = $("#attributionselect").val();
+            if (attr.length > 0 && attr != ''){
+                $("#attribution").val(attr);
+            }
+            $.ajax({
+                type:"post",
+                url:baseUrl + "/resume/selectResumeAll",
+                data:$("#form1").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    if (data.state == "1"){
+                        window.location.href = baseUrl + "/resume/listResume";
+                    }
+                }
+            })
+        }
+
+        function download() {
+            var attr = $("#attributionselect").val();
+            if (attr.length > 0 && attr != ''){
+                $("#attribution").val(attr);
+            }
+            $.ajax({
+                type:"post",
+                url:baseUrl + "/resume/selectResumeAll",
+                data:$("#form1").serialize(),
+                dataType:"json",
+                success:function (data) {
+                    if (data.state == "1"){
+                        window.location.href = baseUrl + "/resume/resumeXlsDownload";
+                    }
+                }
+            })
+        }
+
+        function getRootPath_web() {
+            //获取当前网址
+            var curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录
+            var pathName = window.document.location.pathname;
+            var pos = curWwwPath.indexOf(pathName);
+            //获取主机地址
+            var localhostPaht = curWwwPath.substring(0, pos);
+            //获取带"/"的项目名
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            return (localhostPaht + projectName);
+        }
+    </script>
+    <script type="text/javascript" language="javascript">
+        function emputtimebefore(tt) {
+            if (tt.value == "") {
+                var myDate = new Date();
+                //获取完整的年份(4位,1970-????)
+                //获取当前月份(0-11,0代表1月)
+                tt.value = myDate.getFullYear() + '-' + myDate.getMonth() + '-01' ;
+            }
+        }
+        function emputtimelater(tt) {
+            if (tt.value == "") {
+                var myDate = new Date();
+                var myday = myDate.getMonth() + 1;
+                tt.value = myDate.getFullYear() + '-' + myday + '-' + myDate.getDate();
+            }
+        } function checkDate(value) {
+            if (value == "") { } else {
+                if ((/^\d{4}-\d{1,2}-\d{1,2}$/).test(value) == false) {
+                    alert("错误的日期格式，日期格式如：2008-8-8");
+                    return false;
+                }
+
+                dateArr = value.split("-");
+                monthPerDays = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+                year = dateArr[0];
+                month = dateArr[1];
+                day = dateArr[2];
+
+                if (month > 12 || month < 0) {
+                    alert("错误的日期月份");
+                    return false;
+                }
+
+                if (day > 31 || day < 0) {
+                    alert("错误的日期天数");
+                    return false;
+                }
+
+                if (year % 100 == 0) {
+                    if (year % 400 == 0)
+                        monthPerDays[1] = 29;
+                }
+                else {
+                    if (year % 4 == 0)
+                        monthPerDays[1] = 29;
+                }
+
+                if (monthPerDays[month - 1] < day) {
+                    alert("错误的日期天数");
+                    return false;
+                }
+                //           alert("正确的日期格式");
+                return true;
+            }
+        }
+    </script>
+</body>
+</html>
